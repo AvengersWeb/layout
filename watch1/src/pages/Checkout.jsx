@@ -1,0 +1,410 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAxiosSecure from '../hooks/useAxiosSecure';
+import useAuth from '../hooks/useAuth';
+import swal from 'sweetalert';
+
+const Checkout = () => {
+  const [userName, setUserName] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userDivision, setUserDivision] = useState('');
+  const [userAddress, setUserAddress] = useState('');
+
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [paymentNumber, setPaymentNumber] = useState('');
+  const [paymentTrxId, setPaymentTrxId] = useState('');
+  const [message, setMessage] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
+
+  // backend code state and others
+  const [LSItems, setLSItems] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(100);
+  const axiosSecure = useAxiosSecure();
+  const { language } = useAuth();
+
+  useEffect(() => {
+    const storedProducts = JSON.parse(localStorage.getItem('cart')) || [];
+    setLSItems(storedProducts);
+
+    const sum = storedProducts.reduce(
+      (acc, product) => acc + product.sprice * product.quantity,
+      0
+    );
+    const shippingCost = userDivision === 'Dhaka' ? 50 : 100;
+    setShippingCost(shippingCost);
+    const totalPrice = sum + shippingCost;
+    setTotal(totalPrice);
+  }, [userDivision, navigate]);
+
+  // handle submit
+  const handleSubmit = () => {
+    let valid = true;
+    let errorMessage = '';
+
+    if (
+      !userName ||
+      !userPhone ||
+      !userEmail ||
+      !userDivision ||
+      !userAddress
+    ) {
+      errorMessage = 'Please Fill Up All The required Fields!';
+      valid = false;
+    } else if (userPhone.length !== 11) {
+      errorMessage = 'Please Provide a 11 digit phone number';
+      valid = false;
+    } else if (paymentMethod !== 'cod' && paymentNumber.length !== 11) {
+      errorMessage = 'Please Provide a valid 11 digit payment number';
+      valid = false;
+    } else if (
+      paymentMethod !== 'cod' &&
+      (paymentNumber === '' || paymentTrxId === '')
+    ) {
+      errorMessage =
+        'Invalid payment details. Please check your payment number and transaction id';
+      valid = false;
+    }
+
+    if (valid) {
+      setSuccess(true);
+
+      const checkOutData = {
+        name: userName,
+        email: userEmail,
+        phone: userPhone,
+        division: userDivision,
+        address: userAddress,
+        shippingCost: shippingCost,
+        totalPrice: total,
+        paymentMethod,
+        bkashNumber: paymentNumber,
+        bkashTrnID: paymentTrxId,
+        productDetails: LSItems,
+        date: new Date(),
+        status: 'On Hold Orders',
+      };
+      console.log(checkOutData);
+      axiosSecure
+        .post('/api/v1/order', checkOutData)
+        .then((response) => {
+          if (response.data.insertedId) {
+            swal('Congratulation!', 'We received your order', 'success');
+            localStorage.removeItem('cart');
+            navigate('/shop');
+          }
+        })
+        .catch((error) => {
+          console.log('axios post error', error);
+        });
+    } else {
+      setSuccess(false);
+      setMessage(errorMessage);
+    }
+  };
+
+  return (
+    <div className="pb-12 pt-28 md:pb-20 lg:pb-28 lg:pt-36">
+      <div className="container mx-auto px-4">
+        <h2 className="text-center font-bold text-3xl md:text-5xl mb-12">
+          {language === 'en' ? 'Checkout' : 'চেকআউট'}
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
+          <div>
+            {/* billing details */}
+            <div className="black-shadow rounded-lg py-12 px-4 sm:px-6">
+              <h3 className="font-bold text-3xl mb-6">
+                {language === 'en' ? 'Billing Details' : 'আপনার তথ্য'}
+              </h3>
+              <form className="font-secondary">
+                {/* input group */}
+                <div className="flex flex-col md:flex-row gap-4 justify-between">
+                  {/* name */}
+                  <div className="flex flex-col gap-y-3 w-full md:w-1/2">
+                    <label htmlFor="name" className="form-label !text-base">
+                      {language === 'en' ? 'Name' : ' নাম'}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      name="title"
+                      className="input-with-shadow"
+                      required
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                    />
+                  </div>
+                  {/* phone */}
+                  <div className="flex flex-col gap-y-3 w-full md:w-1/2">
+                    <label htmlFor="phone" className="form-label !text-base">
+                      {language === 'en' ? 'Phone' : 'ফোন'}
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="Your Phone Number"
+                      className="input-with-shadow"
+                      name="phone"
+                      value={userPhone}
+                      onChange={(e) => setUserPhone(e.target.value)}
+                    />
+                  </div>
+                </div>
+                {/* input group */}
+                <div className="flex flex-col md:flex-row gap-4 justify-between mt-6">
+                  {/* email */}
+                  <div className=" flex flex-col gap-y-3 w-full md:w-1/2">
+                    <label htmlFor="email" className="form-label !text-base">
+                      {language === 'en' ? 'Email' : 'ইমেইল'}
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="Your Email"
+                      name="email"
+                      className="input-with-shadow"
+                      value={userEmail}
+                      onChange={(e) => setUserEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {/* Division*/}
+                  <div className=" flex flex-col gap-y-3 w-full md:w-1/2">
+                    <label htmlFor="division" className="form-label !text-base">
+                      {language === 'en' ? 'Division' : 'বিভাগ'}
+                    </label>
+                    <select
+                      name="division"
+                      required
+                      className="input-with-shadow"
+                      value={userDivision}
+                      onChange={(e) => setUserDivision(e.target.value)}
+                    >
+                      <option value="" hidden>
+                        {language === 'en' ? 'Your Division' : 'আপনার বিভাগ'}
+                      </option>
+                      <option value="Dhaka">Dhaka</option>
+                      <option value="Chattogram">Chattogram</option>
+                      <option value="Khulna">Khulna</option>
+                      <option value="Rajshahi">Rajshahi</option>
+                      <option value="Rangpur">Rangpur</option>
+                      <option value="Barishal">Barishal</option>
+                      <option value="Mymensingh">Mymensingh</option>
+                      <option value="Sylhet">Sylhet</option>
+                    </select>
+                  </div>
+                </div>
+                {/* input group */}
+                <div className="flex flex-col md:flex-row gap-4 justify-between mt-6">
+                  {/* address */}
+                  <div className=" flex flex-col gap-y-3 w-full">
+                    <label htmlFor="address" className="form-label !text-base">
+                      {language === 'en' ? 'Address' : 'ঠিকানা'}
+                    </label>
+                    <textarea
+                      type="address"
+                      placeholder="Your address"
+                      name="address"
+                      className="input-with-shadow"
+                      rows="3"
+                      required
+                      value={userAddress}
+                      onChange={(e) => setUserAddress(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          {/* order details and payment */}
+          <div className="flex flex-col gap-y-6">
+            {/* order details */}
+            <div className="black-shadow rounded-lg py-12 px-4 sm:px-6">
+              <h3 className="font-bold text-3xl mb-6">
+                {' '}
+                {language === 'en' ? 'Order Details' : 'পণ্য বিবরণী'}
+              </h3>
+              <div className="font-secondary">
+                <div className="flex items-center justify-between gap-3 text-base font-bold border-b pb-6 ">
+                  <h5>{language === 'en' ? 'Product' : 'প্রোডাক্ট'}</h5>
+                  <h5>{language === 'en' ? 'Pricing' : 'মূল্য'}</h5>
+                </div>
+                {/* single item */}
+                {LSItems.map((item) => (
+                  <div
+                    className="flex items-center justify-between gap-x-5 border-b py-6 font-bold"
+                    key={item._id}
+                  >
+                    <h5>
+                      <span>{item.title}</span> x <span>{item.quantity}</span> -{' '}
+                      <span className="capitalize">
+                        {language === 'en' ? 'Color:' : 'কালারঃ'}
+                        {item.choosenColor}
+                      </span>
+                      ,{' '}
+                      <span className="capitalize">
+                        {language === 'en' ? 'Size:' : 'সাইজঃ'}
+                        {item.choosenSize}
+                      </span>
+                    </h5>
+                    <h5 className="whitespace-nowrap">
+                      ৳ {item.sprice * item.quantity}
+                    </h5>
+                  </div>
+                ))}
+                {/* shipping */}
+                <div className="flex items-center justify-between gap-x-5 border-b py-6">
+                  <h5>{language === 'en' ? 'Shipping:' : 'শিপিং'}</h5>
+                  <h5 className="whitespace-nowrap">
+                    ৳ {userDivision === 'Dhaka' ? 50 : 100}
+                  </h5>
+                </div>
+                {/* total */}
+                <div className="flex items-center justify-between gap-x-5 py-6 font-bold text-lg">
+                  <h5>Total</h5>
+                  <h5 className="whitespace-nowrap font-bold text-lg">
+                    ৳ {total}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            {/* payment */}
+            <div className="black-shadow rounded-lg py-12 px-4 sm:px-6">
+              <h3 className="font-bold text-3xl mb-6">
+                {language === 'en' ? 'Payment:' : 'পেমেন্ট'}
+              </h3>
+              <form action="">
+                <ul className="font-secondary flex flex-col gap-y-2 ">
+                  <li className="relative">
+                    <input
+                      type="radio"
+                      className="input-radio"
+                      name="paymentMethod"
+                      value="cod"
+                      checked={paymentMethod === 'cod'}
+                      onChange={() => setPaymentMethod('cod')}
+                    />
+                    <label htmlFor="cod" className="ml-2">
+                      Cash on delivery
+                    </label>
+                    <div
+                      className={`${
+                        paymentMethod === 'cod' ? 'block' : 'hidden'
+                      }   flex w-full justify-start bg-sky-300 bg-opacity-25 p-4 text-black rounded duration-500 mt-2`}
+                    >
+                      <p>Pay with cash upon delivery.</p>
+                    </div>
+                  </li>
+                  <li className="relative">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        className="input-radio"
+                        name="paymentMethod"
+                        value="bkash"
+                        checked={paymentMethod === 'bkash'}
+                        onChange={() => setPaymentMethod('bkash')}
+                      />
+
+                      <label
+                        htmlFor="bkash"
+                        className="ml-2 flex gap-2 items-center"
+                      >
+                        bKash
+                        <img
+                          src="https://panjabi-market-bd.avengers-web.com/wp-content/plugins/bkash/images/bkash.png"
+                          alt="bKash"
+                          className="w-[60px]"
+                        />
+                      </label>
+                    </div>
+                    <div
+                      className={`${
+                        paymentMethod === 'bkash' ? 'block' : 'hidden'
+                      } w-full flex flex-col gap-y-3 justify-start bg-sky-300 bg-opacity-25 p-4 text-black rounded duration-500 mt-2`}
+                    >
+                      <p>
+                        Please complete your bKash payment at first, then fill
+                        up the form below.
+                      </p>
+                      <p>bKash Personal Number : 01638719578</p>
+                      <table border="0">
+                        <tbody className="flex flex-col gap-y-2">
+                          <tr className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <td>
+                              <label
+                                htmlFor="bkash_number"
+                                className="sm:whitespace-nowrap sm:mr-3"
+                              >
+                                bKash Number:
+                              </label>
+                            </td>
+                            <td>
+                              <input
+                                className="input-with-shadow"
+                                type="text"
+                                name="bkash bkash_number"
+                                placeholder="01XXXXXXXXX"
+                                value={paymentNumber}
+                                onChange={(e) =>
+                                  setPaymentNumber(e.target.value)
+                                }
+                              />
+                            </td>
+                          </tr>
+                          <tr className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <td>
+                              <label
+                                htmlFor="bkash_transaction_id"
+                                className="sm:whitespace-nowrap sm:mr-3"
+                              >
+                                bKash Transaction ID:
+                              </label>
+                            </td>
+                            <td>
+                              <input
+                                className="input-with-shadow"
+                                type="text"
+                                name="bkash bkash_transaction_id"
+                                id="bkash_transaction_id"
+                                placeholder="8N7A6D5EE7M"
+                                value={paymentTrxId}
+                                onChange={(e) =>
+                                  setPaymentTrxId(e.target.value)
+                                }
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </li>
+                </ul>
+              </form>
+              <button
+                className="bg-black text-white font-base uppercase font-bold py-3 px-12 hover:translate-y-2 duration-500 rounded w-full mt-6"
+                type="submit"
+                onClick={handleSubmit}
+              >
+                {language === 'en' ? 'Place Order' : 'অর্ডার করুন'}
+              </button>
+              {message !== '' && (
+                <p
+                  className={`${
+                    success ? 'text-emerald-400' : 'text-red-400'
+                  } font-bold font-secondary mt-3`}
+                >
+                  {message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;
