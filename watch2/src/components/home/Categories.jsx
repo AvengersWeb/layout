@@ -13,12 +13,12 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-import productOne from '/images/home/furniture1/product1.webp';
-import productTwo from '/images/home/furniture1/product2.webp';
-import productThree from '/images/home/furniture1/product3.webp';
-import productFour from '/images/home/furniture1/product4.webp';
-import productFive from '/images/home/furniture1/product5.webp';
-import productSeven from '/images/home/furniture1/product7.webp';
+import productOne from '/images/home/watch2/product1.webp';
+import productTwo from '/images/home/watch2/product2.webp';
+import productThree from '/images/home/watch2/product3.webp';
+import productFour from '/images/home/watch2/product4.webp';
+import productFive from '/images/home/watch2/product5.webp';
+import productSeven from '/images/home/watch2/product7.webp';
 import { Link } from 'react-router-dom';
 import Button from '../common/Button';
 

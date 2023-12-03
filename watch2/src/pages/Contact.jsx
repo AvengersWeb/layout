@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
-import contactImage from '/images/home/furniture1/hero2.webp';
+import contactImage from '/images/home/watch2/hero2.webp';
 import useAuth from '../hooks/useAuth';
 
 const Contact = () => {

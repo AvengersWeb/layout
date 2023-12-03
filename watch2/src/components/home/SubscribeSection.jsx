@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import SubscribeImage from '/images/home/furniture1/hero1.webp';
-import SubscribeImage2 from '/images/home/furniture1/hero2.webp';
+import SubscribeImage from '/images/home/watch2/hero1.webp';
+import SubscribeImage2 from '/images/home/watch2/hero2.webp';
 import Button from '../common/Button';
 
 const SubscribeSection = () => {
