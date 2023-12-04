@@ -2,6 +2,7 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import useAuth from '../../hooks/useAuth';
+import Loader from '../../components/Loader';
 const VITE_IMAGE_HOSTING_KEY = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${VITE_IMAGE_HOSTING_KEY}`;
 
@@ -126,7 +127,21 @@ const AddBlog = () => {
               type="submit"
               disabled={loading}
             >
-              Add New Blog
+              <button
+                className={`bg-black text-white font-base uppercase font-bold py-3 px-12 hover:translate-y-2 duration-500 rounded cursor-pointer ${
+                  loading && 'cursor-not-allowed'
+                }`}
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader size={11} loader="sync" />
+                  </>
+                ) : (
+                  <>Add Blog</>
+                )}
+              </button>
             </button>
           </div>
         </form>

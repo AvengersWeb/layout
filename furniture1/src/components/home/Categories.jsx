@@ -20,17 +20,14 @@ import productFour from '/images/home/furniture1/product4.webp';
 import productFive from '/images/home/furniture1/product5.webp';
 import productSeven from '/images/home/furniture1/product7.webp';
 import { Link } from 'react-router-dom';
-import Button from '../common/Button';
 
 const Categories = () => {
-  const { language } = useAuth();
+  const { language, setCategory } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleSwiperUpdate = (swiper) => {
-    console.log('Current Index:', swiper.activeIndex);
-    console.log('Total Slides:', swiper.slides.length);
     setCurrentIndex(swiper.activeIndex);
   };
 
@@ -247,7 +244,8 @@ const Categories = () => {
           {dummyData?.map((product, i) => (
             <SwiperSlide className="bg-white group" key={i}>
               <Link
-                to={product._id ? `/single-product/${product._id}` : `/shop`}
+                to={`/shop`}
+                onClick={setCategory(product.title.toLowerCase())}
               >
                 <div className="flex justify-center items-center">
                   <img

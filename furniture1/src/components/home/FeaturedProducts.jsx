@@ -96,7 +96,7 @@ const FeaturedProducts = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-6">
           <h4 className="text-xl lg:text-2xl uppercase font-bold tracking-widest">
-            {language === 'en' ? 'Popular Products' : 'চলমান প্রডাক্ট'}
+            {language === 'en' ? 'Featured Products' : 'চলমান প্রডাক্ট'}
           </h4>
         </div>
         {/* products */}

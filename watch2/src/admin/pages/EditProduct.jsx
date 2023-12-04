@@ -2,16 +2,20 @@ import { useLoaderData } from 'react-router-dom';
 import swal from 'sweetalert';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import axios from 'axios';
+import Loader from '../../components/Loader';
+import useAuth from '../../hooks/useAuth';
 const VITE_IMAGE_HOSTING_KEY = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${VITE_IMAGE_HOSTING_KEY}`;
 
 const EditProduct = () => {
+  const { loading, setLoading } = useAuth();
   const { category, desc, rprice, sprice, title, _id } = useLoaderData();
   console.log(rprice, sprice);
   const axiosSecure = useAxiosSecure();
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(e.target);
     const featuredImage = formData.get('featured_image');
@@ -85,19 +89,11 @@ const EditProduct = () => {
           );
         }
       }
+      setLoading(false);
     } catch (error) {
       console.error('Error uploading image:', error);
+      setLoading(false);
     }
-
-    // {
-    //   if (updateItem.data.modifiedCount > 0) {
-    //     swal(
-    //       'Congratulation!',
-    //       'Your product updated successfully!',
-    //       'success'
-    //     );
-    //   }
-    // }
   };
 
   return (
@@ -331,8 +327,15 @@ const EditProduct = () => {
             <button
               className="bg-black text-white font-base uppercase font-bold py-3 px-12 hover:translate-y-2 duration-500 rounded"
               type="submit"
+              disabled={loading}
             >
-              Edit Product
+              {loading ? (
+                <>
+                  <Loader size={11} loader="sync" />
+                </>
+              ) : (
+                <>Edit Product</>
+              )}
             </button>
           </div>
         </form>

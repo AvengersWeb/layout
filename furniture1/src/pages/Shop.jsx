@@ -7,7 +7,11 @@ import Loader from '../components/Loader';
 
 const Shop = () => {
   const axiosPublic = useAxiosPublic();
-  const { language } = useAuth();
+  const { language, category } = useAuth();
+
+  const categoryFilter = (item) => {
+    return category ? item.category === category : true;
+  };
 
   const { isLoading, data } = useQuery({
     queryKey: ['product'],
@@ -37,7 +41,7 @@ const Shop = () => {
               <p className="text-lg font-medium">No Product Found!</p>
             ) : (
               <div className="grid gap-4 md:gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {data?.map((product) => (
+                {data?.filter(categoryFilter).map((product) => (
                   <SingleItem key={product._id} product={product} />
                 ))}
               </div>

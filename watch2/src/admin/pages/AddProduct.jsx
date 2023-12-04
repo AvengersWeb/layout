@@ -2,6 +2,7 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
 import useAuth from '../../hooks/useAuth';
+import Loader from '../../components/Loader';
 const VITE_IMAGE_HOSTING_KEY = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${VITE_IMAGE_HOSTING_KEY}`;
 
@@ -314,7 +315,13 @@ const AddProduct = () => {
               type="submit"
               disabled={loading}
             >
-              Add New Product
+              {loading ? (
+                <>
+                  <Loader size={11} loader="sync" />
+                </>
+              ) : (
+                <>Add New Product</>
+              )}
             </button>
           </div>
         </form>

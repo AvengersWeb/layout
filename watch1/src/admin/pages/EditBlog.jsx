@@ -2,15 +2,21 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useLoaderData } from 'react-router-dom';
+import Loader from '../../components/Loader';
+import useAuth from '../../hooks/useAuth';
 const VITE_IMAGE_HOSTING_KEY = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${VITE_IMAGE_HOSTING_KEY}`;
 
 const EditBlog = () => {
+  const { loading, setLoading } = useAuth();
   const axiosSecure = useAxiosSecure();
   const blogDetails = useLoaderData();
   console.log(blogDetails);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     const formData = new FormData(e.target);
     const featuredImage = formData.get('featured_image');
@@ -50,8 +56,10 @@ const EditBlog = () => {
           swal('Congratulation!', 'Your blog updated successfully!', 'success');
         }
       }
+      setLoading(false);
     } catch (error) {
       console.error('Error uploading image:', error);
+      setLoading(false);
     }
   };
   return (
@@ -115,7 +123,21 @@ const EditBlog = () => {
               className="bg-black text-white font-base uppercase font-bold py-3 px-12 hover:translate-y-2 duration-500 rounded w-full"
               type="submit"
             >
-              Edit Blog
+              <button
+                className={`bg-black text-white font-base uppercase font-bold py-3 px-12 hover:translate-y-2 duration-500 rounded cursor-pointer ${
+                  loading && 'cursor-not-allowed'
+                }`}
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader size={11} loader="sync" />
+                  </>
+                ) : (
+                  <>Edit Blog</>
+                )}
+              </button>
             </button>
           </div>
         </form>

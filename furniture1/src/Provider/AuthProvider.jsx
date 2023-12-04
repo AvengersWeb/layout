@@ -7,6 +7,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [language, setLanguage] = useState('en');
+  const [category, setCategory] = useState('');
 
   const authInfo = {
     cartItems,
@@ -17,6 +18,8 @@ const AuthProvider = ({ children }) => {
     setLoading,
     language,
     setLanguage,
+    category,
+    setCategory,
   };
 
   return (
