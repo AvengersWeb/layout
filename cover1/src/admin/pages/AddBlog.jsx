@@ -46,7 +46,7 @@ const AddBlog = () => {
       axiosSecure
         .post('/api/v1/addblog', blogData)
         .then((response) => {
-          if (response.data.insertedId) {
+          if (response.data._id) {
             setLoading(false);
 
             swal(

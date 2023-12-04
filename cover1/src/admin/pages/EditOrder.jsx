@@ -31,7 +31,7 @@ const EditOrder = () => {
       updateData
     );
     {
-      if (updatedItem.data.modifiedCount > 0) {
+      if (updatedItem.data._id) {
         swal(
           'Congratulation!',
           'Your order status updated successfully!',

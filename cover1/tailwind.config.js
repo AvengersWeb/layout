@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        primary: ['Poiret One'],
-        secondary: ['Libre Baskerville'],
+        primary: ['Stint Ultra Expanded'],
+        secondary: ['Poppins'],
       },
       colors: {
         primary: '#ff6363',

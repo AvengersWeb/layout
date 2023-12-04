@@ -52,7 +52,7 @@ const EditBlog = () => {
         updatedBlogData
       );
       {
-        if (updateBlog.data.modifiedCount > 0) {
+        if (updateBlog.data._id) {
           swal('Congratulation!', 'Your blog updated successfully!', 'success');
         }
       }

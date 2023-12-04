@@ -34,7 +34,7 @@ const AdminTable = () => {
       if (willDelete) {
         const res = await axiosSecure.delete(`/api/v1/allproduct/${id}`);
         // console.log(res.data);
-        if (res.data.deletedCount > 0) {
+        if (res.data._id) {
           // refetch to update the ui
           refetch();
 
