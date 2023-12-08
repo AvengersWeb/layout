@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SubscribeImage from '/images/home/cover1/hero-bg.webp';
+import SubscribeImage from '/images/home/cover1/category1.webp';
 import Button from '../common/Button';
 
 const SubscribeSection = () => {
@@ -20,21 +20,16 @@ const SubscribeSection = () => {
 
   return (
     <section
-      className="AW_SUBSCRIBE_1 py-12 md:py-20 lg:py-32 flex justify-center items-center bg-center bg-no-repeat bg-cover"
+      className="AW_SUBSCRIBE_1 py-12 md:py-20 lg:py-32 flex justify-center items-center bg-gray-50"
       id="AW_SUBSCRIBE_1"
-      style={{ backgroundImage: `url(${SubscribeImage})` }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row-reverse gap-4 max-w-[1100px] mx-auto text-white">
-          <div className="w-full md:w-1/2 hidden md:block">
-            <img
-              src={SubscribeImage2}
-              alt=""
-              className="h-[300px] md:h-[555px] w-full object-cover rounded-xl shadow-light"
-            />
-          </div>
+        <div className="flex flex-col md:flex-row-reverse gap-4 max-w-[1300px] mx-auto ">
           <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12">
-            <h4 className="text-3xl font-medium mb-4">{`Let's Keep in Touch`}</h4>
+            <h4 className="text-3xl md:text-5xl leading-snug md:leading-snug font-secondary font-black mb-4">
+              DEFINE YOURSELF. <br />
+              BE DIFFERENT.
+            </h4>
             <p className="font-secondary text-base">
               Subscibe with your phone number to get the latest news and sales
               about our products.
@@ -56,7 +51,7 @@ const SubscribeSection = () => {
               </div>
               <div className="mt-11 w-full">
                 <Button
-                  classname="w-full bg-black text-white pt-5 pb-4"
+                  classname="text-[12px] w-full bg-black text-white pt-[18px] pb-4 px-12"
                   type="submit"
                 >
                   Subscribe Now
@@ -68,6 +63,13 @@ const SubscribeSection = () => {
                 </p>
               )}
             </form>
+          </div>
+          <div className="w-full md:w-1/2 hidden md:block">
+            <img
+              src={SubscribeImage}
+              alt=""
+              className="h-[300px] md:h-[555px] w-full object-cover rounded-xl shadow-light"
+            />
           </div>
         </div>
       </div>

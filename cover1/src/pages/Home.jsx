@@ -2,8 +2,9 @@ import {
   Hero,
   PopularProdcuts,
   FeaturedProducts,
-  Services,
   Categories,
+  SubscribeSection,
+  Testimonial,
 } from '../components';
 
 const Home = () => {
@@ -12,8 +13,9 @@ const Home = () => {
       <Hero />
       <Categories />
       <FeaturedProducts />
-      <Services />
+      <SubscribeSection />
       <PopularProdcuts />
+      <Testimonial/>
     </div>
   );
 };
