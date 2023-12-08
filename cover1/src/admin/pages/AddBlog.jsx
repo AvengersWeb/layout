@@ -54,6 +54,7 @@ const AddBlog = () => {
               'You successfully added a blog post!',
               'success'
             );
+            e.target.reset()
           }
         })
         .catch((error) => {

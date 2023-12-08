@@ -81,7 +81,7 @@ const EditProduct = () => {
         updatedProductData
       );
       {
-        if (updateItem.data._id) {
+        if (updateItem.data.modifiedCount > 0) {
           swal(
             'Congratulation!',
             'Your product updated successfully!',

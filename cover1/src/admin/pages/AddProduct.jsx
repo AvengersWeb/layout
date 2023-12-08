@@ -77,11 +77,13 @@ const AddProduct = () => {
         .then((response) => {
           if (response.data._id) {
             setLoading(false);
+            
             swal(
               'Congratulation!',
               'You successfully added a product!',
               'success'
             );
+            e.target.reset()
           }
         })
         .catch((error) => {

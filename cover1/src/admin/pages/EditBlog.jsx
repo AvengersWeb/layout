@@ -1,7 +1,7 @@
 import swal from 'sweetalert';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader';
 import useAuth from '../../hooks/useAuth';
 const VITE_IMAGE_HOSTING_KEY = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -11,6 +11,7 @@ const EditBlog = () => {
   const { loading, setLoading } = useAuth();
   const axiosSecure = useAxiosSecure();
   const blogDetails = useLoaderData();
+  const navigate = useNavigate()
   console.log(blogDetails);
 
   const handleSubmit = async (e) => {
@@ -54,6 +55,7 @@ const EditBlog = () => {
       {
         if (updateBlog.data._id) {
           swal('Congratulation!', 'Your blog updated successfully!', 'success');
+          navigate('/dashboard/all-blogs')
         }
       }
       setLoading(false);

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
 
 import logo from '/images/logo.webp';
+import { AuthContext } from '../../Provider/AuthProvider';
 
 const DashNav = () => {
   const { pathname } = useLocation();
@@ -11,6 +12,8 @@ const DashNav = () => {
   const [active, setActive] = useState(pathname.replace('/dashboard/', ''));
   const [open, setIsOpen] = useState(false);
 
+  const { logOut, loadUserDate, user } = useContext(AuthContext)
+  console.log(loadUserDate)
   return (
     <div className="bg-white shadow w-full text-4xl relative py-3 font-secondary">
       <div className="container mx-auto px-4">
@@ -85,6 +88,15 @@ const DashNav = () => {
               >
                 <li>Add Blog</li>
               </Link>
+              {loadUserDate?.email && loadUserDate?.email}
+              <li>
+                {
+                  user && (<button
+                    onClick={logOut}
+                    >Logout</button>) 
+                }
+              
+              </li>
             </ul>
           </div>
           {/* mobile navigation hamburger menu */}
@@ -166,6 +178,10 @@ const DashNav = () => {
             >
               <li>Add Blog</li>
             </Link>
+            <li>{loadUserDate?.email && loadUserDate?.email}</li>
+            <li><button
+              onClick={logOut}
+              >Logout</button></li>
           </ul>
         </div>
       </div>
